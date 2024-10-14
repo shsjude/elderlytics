@@ -24,10 +24,14 @@ const FacilityView: React.FC<FacilityViewProps> = ({ facilities, view }) => {
 
   const getRoomTypesAndRates = (facility: Facility) => {
     return [
-      { roomType: facility.roomType1, rentalRate: facility.roomType1Price },
-      { roomType: facility.roomType2, rentalRate: facility.roomType2Price },
-      { roomType: facility.roomType3, rentalRate: facility.roomType3Price },
-    ].filter(({ roomType, rentalRate }) => roomType !== 'N/A' && rentalRate !== 'N/A');
+      { roomType: facility.roomType1, rentalRate: parseFloat(facility.roomType1Price.replace(/[^0-9.-]+/g, '')) },
+      { roomType: facility.roomType2, rentalRate: parseFloat(facility.roomType2Price.replace(/[^0-9.-]+/g, '')) },
+      { roomType: facility.roomType3, rentalRate: parseFloat(facility.roomType3Price.replace(/[^0-9.-]+/g, '')) },
+    ].filter(({ roomType, rentalRate }) => roomType !== 'N/A' && rentalRate > 0)
+      .map(({ roomType, rentalRate }) => ({
+        roomType,
+        rentalRate: rentalRate.toLocaleString() // Add commas to the numbers
+      }));
   };
 
   if (view === 'card') {
@@ -43,7 +47,7 @@ const FacilityView: React.FC<FacilityViewProps> = ({ facilities, view }) => {
                 <Card.Text><strong>Room Types and Rates:</strong></Card.Text>
                 <ul>
                   {getRoomTypesAndRates(facility).map(({ roomType, rentalRate }, index) => (
-                    <li key={index}><FaBed /> {roomType} - <FaDollarSign /> ${rentalRate}</li>
+                    <li key={index}><FaBed /> {roomType} - <FaDollarSign />{rentalRate}</li>
                   ))}
                 </ul>
                 <LinkButton to={`/facility/${facility.id}`}>View Details</LinkButton>
@@ -81,7 +85,7 @@ const FacilityView: React.FC<FacilityViewProps> = ({ facilities, view }) => {
             <td>
               <ul>
                 {getRoomTypesAndRates(facility).map(({ roomType, rentalRate }, index) => (
-                  <li key={index}><FaBed /> {roomType} - <FaDollarSign /> ${rentalRate}</li>
+                  <li key={index}><FaBed /> {roomType} - <FaDollarSign />{rentalRate}</li>
                 ))}
               </ul>
             </td>

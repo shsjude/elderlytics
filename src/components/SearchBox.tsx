@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form, Col, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
 
 interface SearchBoxProps {
   searchTerm: string;
@@ -7,12 +8,28 @@ interface SearchBoxProps {
   view: string;
   onViewChange: (view: string) => void;
   facilityCount: number; // Add facility count as a prop
+  redirectToDashboard?: boolean; // New prop to handle redirection
 }
 
-const SearchBox: React.FC<SearchBoxProps> = ({ searchTerm, onSearchChange, view, onViewChange, facilityCount }) => {
+const SearchBox: React.FC<SearchBoxProps> = ({
+  searchTerm,
+  onSearchChange,
+  view,
+  onViewChange,
+  facilityCount,
+  redirectToDashboard = false, // Default to false
+}) => {
+  const navigate = useNavigate(); // For redirection
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (redirectToDashboard && e.key === 'Enter') {
+      // If redirecting, navigate to the dashboard with search term and card view in state
+      navigate('/', { state: { searchTerm, view: 'card' } });
+    }
+  };
+
   return (
     <>
-      {/* Display the number of facilities dynamically */}
       <Row className="mb-2">
         <Col xs={12}>
           <p style={{ fontSize: '18px', color: 'var(--text-color)' }}>
@@ -21,14 +38,14 @@ const SearchBox: React.FC<SearchBoxProps> = ({ searchTerm, onSearchChange, view,
         </Col>
       </Row>
 
-      {/* Search bar and view toggle buttons */}
       <Row className="mb-4 align-items-center">
         <Col xs={12} md={8}>
           <Form.Control
             type="text"
-            placeholder="Search by facility name, city, state, or zip code..."
+            placeholder="Search by facility name, city, state, zip code, or ownership group..."
             value={searchTerm}
             onChange={onSearchChange}
+            onKeyDown={handleKeyDown} // Handle key press for "Enter"
           />
         </Col>
         <Col xs={12} md={4} className="d-flex justify-content-end">

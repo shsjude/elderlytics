@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { Typography } from '@mui/material';
+import { useLocation } from 'react-router-dom'; // Import to handle redirection state
 import facilityData from '../data/scoutRentData.json';
 import SearchBox from '../components/SearchBox';
 import FacilityView from '../components/FacilityView';
@@ -13,14 +14,18 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ showSidebar }) => {
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [facilitiesPerPage, setFacilitiesPerPage] = useState<number>(6);
-  const [view, setView] = useState<string>('card');
-  const [filteredFacilities, setFilteredFacilities] = useState<Facility[]>([]);
-  const [selectedStates, setSelectedStates] = useState<string[]>([]);
-  const [selectedCareTypes, setSelectedCareTypes] = useState<string[]>([]);
+  const location = useLocation();
+  const searchState = location.state as { searchTerm?: string, view?: string }; // Read redirected search state
 
+  const [searchTerm, setSearchTerm] = useState<string>(searchState?.searchTerm || ''); // Initialize with redirected term
+  const [currentPage, setCurrentPage] = useState<number>(1); // Tracks the current page for pagination
+  const [facilitiesPerPage, setFacilitiesPerPage] = useState<number>(6); // Items per page
+  const [view, setView] = useState<string>(searchState?.view || 'card'); // Initialize with redirected view
+  const [filteredFacilities, setFilteredFacilities] = useState<Facility[]>([]); // Filtered facilities
+  const [selectedStates, setSelectedStates] = useState<string[]>([]); // Selected states for filtering
+  const [selectedCareTypes, setSelectedCareTypes] = useState<string[]>([]); // Selected care types for filtering
+
+  // Initial sorting of facilities based on available data
   useEffect(() => {
     const sortedFacilities = facilityData.sort((a, b) => {
       const hasFullDataA = a.roomType1 && a.roomType1Price && a.careType1;
@@ -30,19 +35,25 @@ const Dashboard: React.FC<DashboardProps> = ({ showSidebar }) => {
     setFilteredFacilities(sortedFacilities);
   }, []);
 
+  // Handle search input change
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value.toLowerCase());
-    setCurrentPage(1);
+    setCurrentPage(1); // Reset to page 1 when searching
   };
 
+  // Handle filter changes (state, care types, and price category)
   const handleFilterChange = useCallback((selectedStates: string[], selectedCareTypes: string[], selectedPriceCategory: string) => {
     setSelectedStates(selectedStates);
     setSelectedCareTypes(selectedCareTypes);
-  
+
     let filtered = facilityData;
+
+    // Filter by selected states
     if (selectedStates.length > 0) {
       filtered = filtered.filter(facility => selectedStates.includes(facility.state));
     }
+
+    // Filter by care types
     if (selectedCareTypes.length > 0) {
       filtered = filtered.filter(facility =>
         [facility.careType1, facility.careType2, facility.careType3].some(careType =>
@@ -50,6 +61,8 @@ const Dashboard: React.FC<DashboardProps> = ({ showSidebar }) => {
         )
       );
     }
+
+    // Filter by price category
     if (selectedPriceCategory) {
       filtered = filtered.filter(facility => {
         const roomPrices = [
@@ -59,6 +72,7 @@ const Dashboard: React.FC<DashboardProps> = ({ showSidebar }) => {
         ];
         const minPrice = Math.min(...roomPrices.filter(price => price > 0));
 
+        // Filter based on selected price range
         switch (selectedPriceCategory) {
           case '1-3k':
             return minPrice >= 1000 && minPrice <= 3000;
@@ -73,15 +87,20 @@ const Dashboard: React.FC<DashboardProps> = ({ showSidebar }) => {
         }
       });
     }
+
     setFilteredFacilities(filtered);
   }, []);
 
+  // Filter facilities by search term for facility name, city, state, zipcode, and ownership group
   const filteredBySearch = filteredFacilities.filter(facility =>
     facility.facilityName.toLowerCase().includes(searchTerm) ||
     facility.city.toLowerCase().includes(searchTerm) ||
-    facility.state.toLowerCase().includes(searchTerm)
+    facility.state.toLowerCase().includes(searchTerm) ||
+    facility.zipCode.toString().includes(searchTerm) ||
+    facility.ownershipGroup?.toLowerCase().includes(searchTerm)
   );
 
+  // Pagination logic
   const indexOfLastFacility = currentPage * facilitiesPerPage;
   const indexOfFirstFacility = indexOfLastFacility - facilitiesPerPage;
   const currentFacilities = filteredBySearch.slice(indexOfFirstFacility, indexOfLastFacility);
@@ -101,7 +120,7 @@ const Dashboard: React.FC<DashboardProps> = ({ showSidebar }) => {
         <Col md={9}>
           <Container className="main-content">
             <Typography variant="h4" gutterBottom>
-              Facility Dashboard
+            Facility Dashboard
             </Typography>
 
             <SearchBox
@@ -110,7 +129,7 @@ const Dashboard: React.FC<DashboardProps> = ({ showSidebar }) => {
               view={view}
               onViewChange={(val: string) => {
                 setView(val);
-                setFacilitiesPerPage(val === 'table' ? 10 : 6);
+                setFacilitiesPerPage(val === 'table' ? 6 : 6);
               }}
               facilityCount={filteredBySearch.length}
             />
