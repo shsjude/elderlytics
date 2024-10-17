@@ -24,15 +24,32 @@ const FacilityView: React.FC<FacilityViewProps> = ({ facilities, view }) => {
 
   const getRoomTypesAndRates = (facility: Facility) => {
     return [
-      { roomType: facility.roomType1, rentalRate: parseFloat(facility.roomType1Price.replace(/[^0-9.-]+/g, '')) },
-      { roomType: facility.roomType2, rentalRate: parseFloat(facility.roomType2Price.replace(/[^0-9.-]+/g, '')) },
-      { roomType: facility.roomType3, rentalRate: parseFloat(facility.roomType3Price.replace(/[^0-9.-]+/g, '')) },
-    ].filter(({ roomType, rentalRate }) => roomType !== 'N/A' && rentalRate > 0)
+      {
+        roomType: facility.roomType1,
+        rentalRate: facility.roomType1Price
+          ? parseFloat(facility.roomType1Price.replace(/[^0-9.-]+/g, ''))
+          : 0, // Default to 0 if roomType1Price is undefined
+      },
+      {
+        roomType: facility.roomType2,
+        rentalRate: facility.roomType2Price
+          ? parseFloat(facility.roomType2Price.replace(/[^0-9.-]+/g, ''))
+          : 0, // Default to 0 if roomType2Price is undefined
+      },
+      {
+        roomType: facility.roomType3,
+        rentalRate: facility.roomType3Price
+          ? parseFloat(facility.roomType3Price.replace(/[^0-9.-]+/g, ''))
+          : 0, // Default to 0 if roomType3Price is undefined
+      }
+    ]
+      .filter(({ roomType, rentalRate }) => roomType !== 'N/A' && rentalRate > 0)
       .map(({ roomType, rentalRate }) => ({
         roomType,
-        rentalRate: rentalRate.toLocaleString() // Add commas to the numbers
+        rentalRate: rentalRate.toLocaleString(), // Add commas to the numbers
       }));
   };
+  
 
   if (view === 'card') {
     return (

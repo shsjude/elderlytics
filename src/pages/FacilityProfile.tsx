@@ -10,7 +10,6 @@ import { Line } from 'react-chartjs-2';
 import { Facility } from '../types/Facility';
 import PaginationComponent from '../components/PaginationComponent'; // Importing Pagination Component
 import OrgChart from '../components/OrgChart'; // Importing OrgChart component for the new tab
-//import Residents from '../components/Resident'; // Importing the new Residents module
 import '../styles/global.css'; // Assuming your global styles file
 
 import {
@@ -34,6 +33,19 @@ ChartJS.register(
   Legend
 );
 
+// Define the Contact interface to ensure type safety
+interface Contact {
+  firstName: string;
+  lastName: string;
+  email: string;
+  jobTitle: string;
+  companyName: string;
+  phoneNumber1?: string;
+  phoneNumber2?: string;
+  phoneNumber3?: string;
+  linkedInProfileURL?: string;
+}
+
 // Job title categorization
 const jobTitleCategories = {
   "Executive Director": /executive director/i,
@@ -55,14 +67,14 @@ const categorizeJobTitle = (jobTitle: string) => {
 };
 
 // Helper function to remove duplicates based on a unique combination of firstName, lastName, and email
-const removeDuplicateContacts = (contacts: any[]) => {
+const removeDuplicateContacts = (contacts: Contact[]) => {
   const uniqueContacts = contacts.reduce((acc, contact) => {
     const key = `${contact.firstName}-${contact.lastName}-${contact.email}`;
     if (!acc[key]) {
       acc[key] = contact;
     }
     return acc;
-  }, {});
+  }, {} as Record<string, Contact>);
   return Object.values(uniqueContacts);
 };
 
@@ -121,12 +133,12 @@ const FacilityProfile: React.FC<{ showSidebar: boolean }> = ({ showSidebar }) =>
     contactsData.filter(contact => {
       const companyNameLower = contact.companyName.toLowerCase();
       return companyNameLower.includes(correctedOwnershipGroup) ||
-             companyNameLower.includes(filteredFacility?.facilityName.toLowerCase() || '');
+        companyNameLower.includes(filteredFacility?.facilityName.toLowerCase() || '');
     })
   );
 
   // Count job titles by category
-  const jobTitleCounts = filteredContacts.reduce((counts: Record<string, number>, contact) => {
+  const jobTitleCounts = filteredContacts.reduce((counts: Record<string, number>, contact: Contact) => {
     const category = categorizeJobTitle(contact.jobTitle);
     counts[category] = (counts[category] || 0) + 1;
     return counts;
@@ -305,9 +317,9 @@ const FacilityProfile: React.FC<{ showSidebar: boolean }> = ({ showSidebar }) =>
                   <Card.Body>
                     <h5>About {filteredFacility?.facilityName}</h5>
                     <p>{filteredFacility?.facilityProfileURL ? (
-                   <a href={filteredFacility.facilityProfileURL} target="_blank" rel="noopener noreferrer">
-                   <FaExternalLinkAlt /> LinkedIn Profile
-                 </a>                 
+                      <a href={filteredFacility.facilityProfileURL} target="_blank" rel="noopener noreferrer">
+                        <FaExternalLinkAlt /> LinkedIn Profile
+                      </a>
                     ) : (
                       "No profile available."
                     )}</p>
@@ -353,9 +365,9 @@ const FacilityProfile: React.FC<{ showSidebar: boolean }> = ({ showSidebar }) =>
                             <td>{contact.email}</td>
                             <td>{[contact.phoneNumber1, contact.phoneNumber2, contact.phoneNumber3].filter(Boolean).join(', ')}</td>
                             <td>{contact.linkedInProfileURL ? (
-                             <a href={contact.linkedInProfileURL} target="_blank" rel="noopener noreferrer">
-                             <FaExternalLinkAlt /> LinkedIn Profile
-                           </a>                           
+                              <a href={contact.linkedInProfileURL} target="_blank" rel="noopener noreferrer">
+                                <FaExternalLinkAlt /> LinkedIn Profile
+                              </a>
                             ) : 'N/A'}</td>
                           </tr>
                         ))}
@@ -382,7 +394,6 @@ const FacilityProfile: React.FC<{ showSidebar: boolean }> = ({ showSidebar }) =>
                 </Card>
               </Tab>
 
-          
             </Tabs>
 
             {/* Modal for displaying employees based on selected role */}
