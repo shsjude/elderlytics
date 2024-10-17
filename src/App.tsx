@@ -11,7 +11,7 @@ const App: React.FC = () => {
   const [showSidebar, setShowSidebar] = useState<boolean>(true); // Manage sidebar state at the App level
 
   return (
-    <Router>
+    <Router basename="/elderlytics">  {/* Add basename for GitHub Pages */}
       <div className="App">
         {/* Single Navbar and Footer at App level */}
         <NavbarComponent onOpenSidebar={() => setShowSidebar(!showSidebar)} />
