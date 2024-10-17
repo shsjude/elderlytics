@@ -10,7 +10,7 @@ import { Line } from 'react-chartjs-2';
 import { Facility } from '../types/Facility';
 import PaginationComponent from '../components/PaginationComponent'; // Importing Pagination Component
 import OrgChart from '../components/OrgChart'; // Importing OrgChart component for the new tab
-import Residents from '../components/Resident'; // Importing the new Residents module
+//import Residents from '../components/Resident'; // Importing the new Residents module
 import '../styles/global.css'; // Assuming your global styles file
 
 import {
@@ -382,16 +382,7 @@ const FacilityProfile: React.FC<{ showSidebar: boolean }> = ({ showSidebar }) =>
                 </Card>
               </Tab>
 
-              {/* New Resident Tab */}
-              <Tab eventKey="residents" title="Marketing">
-                <Card className="mt-3">
-                  <Card.Body>
-                    <h6>Residents at {filteredFacility?.facilityName}</h6>
-                    <Residents apfmID={filteredFacility?.apfmID || 0} />
-                 
-                  </Card.Body>
-                </Card>
-              </Tab>
+          
             </Tabs>
 
             {/* Modal for displaying employees based on selected role */}

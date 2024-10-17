@@ -33,7 +33,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({
       <Row className="mb-2">
         <Col xs={12}>
           <p style={{ fontSize: '18px', color: 'var(--text-color)' }}>
-            {facilityCount.toLocaleString()} facilities in our network.
+            {facilityCount.toLocaleString()} communities in our network.
           </p>
         </Col>
       </Row>
