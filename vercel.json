@@ -1,0 +1,13 @@
+{
+    "build": {
+      "env": {
+        "NODE_ENV": "production",
+        "NODE_VERSION": "16.x"
+      }
+    },
+    "functions": {
+      "memory": 3008,  
+      "maxDuration": 60  
+    }
+  }
+  
