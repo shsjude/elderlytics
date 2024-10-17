@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/elderlytics/build/static/css/main.b9802ff5.css",
+    "main.js": "/elderlytics/build/static/js/main.cf8705bb.js",
+    "static/js/453.59b8a61b.chunk.js": "/elderlytics/build/static/js/453.59b8a61b.chunk.js",
+    "index.html": "/elderlytics/build/index.html",
+    "main.b9802ff5.css.map": "/elderlytics/build/static/css/main.b9802ff5.css.map",
+    "main.cf8705bb.js.map": "/elderlytics/build/static/js/main.cf8705bb.js.map",
+    "453.59b8a61b.chunk.js.map": "/elderlytics/build/static/js/453.59b8a61b.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b9802ff5.css",
+    "static/js/main.cf8705bb.js"
+  ]
+}
