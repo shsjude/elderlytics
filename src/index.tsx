@@ -4,9 +4,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-
-// Import BrowserRouter and specify basename for GitHub Pages subpath
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';  // BrowserRouter should only be here
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -14,7 +12,7 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <BrowserRouter basename="/elderlytics">  {/* Set basename for GitHub Pages */}
+    <BrowserRouter>  {/* Only one Router here */}
       <App />
     </BrowserRouter>
   </React.StrictMode>
