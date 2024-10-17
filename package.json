@@ -2,7 +2,7 @@
   "name": "dashboard",
   "version": "0.1.0",
   "private": true,
- "homepage": "https://shsjude.github.io/elderlytics.proto",
+"homepage": "https://shsjude.github.io/elderlytics.proto",
   "dependencies": {
     "@dabeng/react-orgchart": "^1.0.3",
     "@emotion/react": "^11.13.3",
